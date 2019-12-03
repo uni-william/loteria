@@ -1,0 +1,66 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	ounfxmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<head>
+<meta charset="UTF-8" />
+	</head>
+	<ui:define name="titulo">Usuários</ui:define>
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaUsuarioBean.inicializar()}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Usuários</h1>
+		<h:form id="frm">
+			<p:growl showDetail="true" />
+			<div class="ui-fluid">
+				<p:toolbar>
+					<p:toolbarGroup align="right">
+						<p:button value="Novo usuário" outcome="/usuarios/CadastroUsuario" />
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:growl id="msg" />
+				<p:dataTable value="#{pesquisaUsuarioBean.lista}"
+					var="usuario" style="margin-top: 20px" reflow="true"
+					emptyMessage="Nenhum usuário cadastrado" id="table"
+					paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+					paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+					<p:column headerText="ID" width="10%">
+						<h:outputText value="#{usuario.id}" />
+					</p:column>
+					<p:column headerText="E-mail">
+						<h:outputText value="#{usuario.email}" />
+					</p:column>					
+					<p:column width="8%" exportable="false">
+						<p:button icon="ui-icon-pencil" style="width: 30px" outcome="/usuarios/CadastroUsuario">
+							<f:param name="usuario" value="#{usuario.id}" />
+						</p:button>
+						<p:commandButton icon="ui-icon-trash" title="Excluir"
+							oncomplete="PF('confirmacao').show(); return false;"
+							process="@this" update=":frm:conf" style="width: 30px">
+							<f:setPropertyActionListener value="#{usuario}"
+								target="#{pesquisaUsuarioBean.usuario}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog header="Excluão de Registro"
+					message="Tem certeza que deseja excluir o usuário  #{pesquisaUsuarioBean.usuario.email}?"
+					widgetVar="confirmacao" id="conf">
+					<p:button value="Não"
+						onclick="PF('confirmacao').hide(); return false;" />
+					<p:commandButton value="Sim" update="@form"
+						oncomplete="PF('confirmacao').hide()" process="@this"
+						action="#{pesquisaUsuarioBean.excluir}" />
+				</p:confirmDialog>
+			</div>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

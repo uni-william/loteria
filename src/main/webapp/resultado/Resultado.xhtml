@@ -1,0 +1,110 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="titulo">Resultado</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam name="tipo" value="#{resultadoBean.tipo}" />
+			<f:viewAction action="#{resultadoBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Resultado -
+			#{resultadoBean.jogo.descricao}</h1>
+		<br />
+		<h:form id="frm">
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Resultado" update="@form"
+						action="#{resultadoBean.conferirResultado()}"
+						disabled="#{!resultadoBean.habilitarSalvar}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder" style="margin-top: 10px;">
+					<p:outputLabel value="Tipo aposta" />
+					<p:outputLabel value="#{resultadoBean.jogo.descricao}"
+						style="font-weight: bold;" />
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Qtd números sorteados" />
+					<p:outputLabel value="#{resultadoBean.jogo.qtdSorteio}" />
+				</p:panelGrid>
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Número" for="numero" />
+					<p:inputNumber value="#{resultadoBean.numero}" id="numero"
+						decimalPlaces="0" />
+					<p:commandButton value="Adicionar" process="@this numero"
+						update="@form" action="#{resultadoBean.adicionarNumero}"
+						disabled="#{!resultadoBean.habilitarAdicionar}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-4"
+					styleClass="panelgrid-noborder"
+					rendered="#{resultadoBean.diaSorte}">
+
+					<p:outputLabel value="Mês da sorte" for="mes" />
+					<p:selectOneMenu id="mes" value="#{resultadoBean.mesSorteado}">
+						<p:ajax update="@form" process="@this" />
+						<f:selectItem itemValue="" itemLabel="Informe o mês sorteado..." />
+						<f:selectItems value="#{resultadoBean.meses}" var="mes"
+							itemLabel="#{mes.descricao}" itemValue="#{mes}" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Copiar/Colar" />
+					<p:inputTextarea rows="5" value="#{resultadoBean.numerosSite}">
+						<p:ajax update="@form" process="@this" event="blur" />
+					</p:inputTextarea>
+					<p:commandButton value="Carregar"
+						action="#{resultadoBean.carregar}" update="@form"
+						disabled="#{!resultadoBean.habilitarCarregar}">
+					</p:commandButton>
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-10"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Números sorteados" />
+					<p:outputLabel value="#{resultadoBean.numerosSorteadosFormatados}" />
+
+				</p:panelGrid>
+
+				<p:dataTable value="#{resultadoBean.resultados}" var="resultado"
+					style="margin-top: 20px" reflow="true" emptyMessage="Resultados.."
+					id="table">
+					<p:column headerText="Aposta" width="10%">
+						<h:outputText value="#{resultado.aposta.descricao}" />
+					</p:column>
+					<p:column headerText="Números acertados">
+						<h:outputText value="#{resultado.numerosFormatados}" />
+					</p:column>
+					<p:column headerText="Mês sorte"
+						rendered="#{resultadoBean.diaSorte}" width="12%">
+						<h:outputText value="#{resultado.aposta.mes.descricao}" />
+					</p:column>
+					<p:column headerText="Acertos" width="7%" style="text-align: right">
+						<h:outputText value="#{resultado.numerosAcertados.size()}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

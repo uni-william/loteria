@@ -1,0 +1,55 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="titulo">Cadastro bairro</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{cadastroUsuarioBean.inicializar}" />
+			<f:viewParam name="usuario" value="#{cadastroUsuarioBean.usuario}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroUsuarioBean.editando ?
+			'Edição de usuário' : 'Novo usuário'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroUsuarioBean.salvar}" update="@form" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Novo usuário" outcome="/usuarios/CadastroUsuario" />
+					<p:button value="Pesquisa" outcome="/usuarios/PesquisaUsuarios" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-5"
+					styleClass="panelgrid-noborder" style="margin-top: 10px">
+					<p:outputLabel value="E-mail" for="email" />
+					<p:inputText id="email"
+						value="#{cadastroUsuarioBean.usuario.email}" />
+					<p:outputLabel value="Administrador" for="admin" />
+					<p:selectBooleanCheckbox id="admin"
+						value="#{cadastroUsuarioBean.usuario.administrador}" />
+				</p:panelGrid>
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-1, ui-grid-col-3"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Senha" for="senha" />
+					<p:password id="senha" value="#{cadastroUsuarioBean.usuario.senha}" match="confirmaSenha" validatorMessage="Senhas não conferem" />
+					
+					<p:outputLabel value="Confirma" for="confirmaSenha" />
+					<p:password id="confirmaSenha" value="#{cadastroUsuarioBean.confirmaSenha}"/>
+				</p:panelGrid>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

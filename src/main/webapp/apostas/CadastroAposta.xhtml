@@ -1,0 +1,101 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="titulo">Cadastro aposta</ui:define>
+
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewParam name="aposta" value="#{cadastroApostaBean.aposta}" />
+			<f:viewParam name="jogo" value="#{cadastroApostaBean.tipo}" />
+			<f:viewAction action="#{cadastroApostaBean.inicializar}" />
+		</f:metadata>
+		<h1 class="aw-page-title">#{cadastroApostaBean.editando ? 'Edição
+			de aposta' : 'Nova aposta'}</h1>
+		<br />
+		<h:form id="frm">
+			<p:focus context="frm" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Salvar"
+						action="#{cadastroApostaBean.salvar}" update="@form"
+						disabled="#{!cadastroApostaBean.habilitarSalvar}" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:button value="Nova aposta" outcome="/apostas/CadastroAposta">
+						<f:param name="jogo" value="#{cadastroApostaBean.tipo}" />
+					</p:button>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages closable="true" />
+			<div class="ui-fluid">
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder" style="margin-top: 10px;">
+					<p:outputLabel value="Tipo aposta" />
+					<p:outputLabel value="#{cadastroApostaBean.aposta.jogo.descricao}" />
+				</p:panelGrid>
+				<p:panelGrid columns="4" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Número mínimo aposta" />
+					<p:outputLabel value="#{cadastroApostaBean.aposta.jogo.minino}" />
+					<p:outputLabel value="Número máximo aposta" />
+					<p:outputLabel value="#{cadastroApostaBean.aposta.jogo.maximo}" />
+					<p:outputLabel value="Dezenas permitidas" />
+					<p:outputLabel value="#{cadastroApostaBean.aposta.jogo.primeiraDezena}" />					
+					<p:outputLabel value="até" />
+					<p:outputLabel value="#{cadastroApostaBean.aposta.jogo.ultimaDezena}" />					
+					
+				</p:panelGrid>
+				<p:panelGrid columns="3" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder">
+					<p:outputLabel value="Número" for="numero" />
+					<p:inputNumber value="#{cadastroApostaBean.numero}" id="numero"
+						decimalPlaces="0" />
+					<p:commandButton value="Adicionar"
+						action="#{cadastroApostaBean.adicionarNumero}"
+						process="@this numero" update="@form"
+						disabled="#{!cadastroApostaBean.habilitarAdicionar}" />
+				</p:panelGrid>
+
+				<p:panelGrid columns="2" layout="grid"
+					columnClasses="ui-grid-col-2, ui-grid-col-2"
+					styleClass="panelgrid-noborder"
+					rendered="#{cadastroApostaBean.mesSorte}">
+
+					<p:outputLabel value="Mês da sorte" for="mes" />
+					<p:selectOneMenu id="mes" value="#{cadastroApostaBean.aposta.mes}">
+						<f:selectItems value="#{cadastroApostaBean.meses}" var="mes"
+							itemLabel="#{mes.descricao}" itemValue="#{mes}" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<p:carousel value="#{cadastroApostaBean.aposta.numeros}"
+					headerText="Números - total: #{cadastroApostaBean.aposta.numeros.size()}"
+					var="num" itemStyle="text-align:center" responsive="true"
+					numVisible="#{cadastroApostaBean.numCarousel}">
+					<h:panelGrid columns="1" style="width:100%">
+						<f:facet name="header">
+							<h:outputText value="#{num}" />
+						</f:facet>
+						<f:facet name="footer">
+							<p:commandButton icon="ui-icon-trash" title="Excluir"
+								process="@this" style="width: 30px" update="@form"
+								action="#{cadastroApostaBean.removerNumero}">
+								<f:setPropertyActionListener value="#{num}"
+									target="#{cadastroApostaBean.numero}" />
+							</p:commandButton>
+						</f:facet>
+					</h:panelGrid>
+				</p:carousel>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

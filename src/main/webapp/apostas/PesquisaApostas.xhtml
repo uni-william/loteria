@@ -1,0 +1,73 @@
+<ui:composition template="/WEB-INF/templates/Layout.xhtml"
+	ounfxmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<head>
+<meta charset="UTF-8" />
+	</head>
+	<ui:define name="titulo">Apostas</ui:define>
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{pesquisaApostaBean.inicializar()}" />
+			<f:viewParam name="tipo" value="#{pesquisaApostaBean.tipo}" />
+		</f:metadata>
+		<h1 class="aw-page-title">Apostas -
+			#{pesquisaApostaBean.jogo.descricao}</h1>
+		<h:form id="frm">
+			<p:growl showDetail="true" />
+			<div class="ui-fluid">
+				<p:toolbar>
+					<p:toolbarGroup align="right">
+						<p:button value="Nova aposta" outcome="/apostas/CadastroAposta">
+							<f:param name="jogo" value="#{pesquisaApostaBean.jogo}" />
+						</p:button>
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:growl id="msg" />
+				<p:dataTable value="#{pesquisaApostaBean.listaApostas}" var="aposta"
+					style="margin-top: 20px" reflow="true"
+					emptyMessage="Nenhuma aposta cadastrada" id="table">
+					<p:column headerText="Aposta" width="15%">
+						<h:outputText value="#{aposta.descricao}" />
+					</p:column>
+					<p:column headerText="Números">
+						<h:outputText value="#{aposta.numerosLista}" />
+					</p:column>
+					<p:column headerText="Mês sorte" width="12%"
+						rendered="#{pesquisaApostaBean.diaSorte}">
+						<h:outputText value="#{aposta.mes.descricao}" />
+					</p:column>
+					<p:column width="8%" exportable="false">
+						<p:button icon="ui-icon-pencil" outcome="/apostas/CadastroAposta"
+							style="width: 30px">
+							<f:param name="jogo" value="#{aposta.jogo}" />
+							<f:param name="aposta" value="#{aposta.id}" />
+						</p:button>
+						<p:commandButton icon="ui-icon-trash" title="Excluir"
+							oncomplete="PF('confirmacao').show(); return false;"
+							process="@this" update=":frm:conf" style="width: 30px">
+							<f:setPropertyActionListener value="#{aposta}"
+								target="#{pesquisaApostaBean.apostaSelecionada}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+			</div>
+			<p:confirmDialog header="Excluão de Registro"
+				message="Tem certeza que deseja excluir o  #{pesquisaApostaBean.apostaSelecionada.descricao}?"
+				widgetVar="confirmacao" id="conf">
+				<p:button value="Não"
+					onclick="PF('confirmacao').hide(); return false;" />
+				<p:commandButton value="Sim" update="@form"
+					oncomplete="PF('confirmacao').hide()" process="@this"
+					action="#{pesquisaApostaBean.excluir}" />
+			</p:confirmDialog>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
