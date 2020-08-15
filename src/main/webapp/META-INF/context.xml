@@ -7,7 +7,7 @@
 		
 	<Resource 
 		auth="Container"
-		driverClass="com.mysql.jdbc.Driver"
+		driverClass="com.mysql.cj.jdbc.Driver"
 		minPoolSize="10"
 		maxPoolSize="100"
 		name="jdbc/loteriaBD"
@@ -15,6 +15,6 @@
 		password="root" 
 		factory="org.apache.naming.factory.BeanFactory"
 		type="com.mchange.v2.c3p0.ComboPooledDataSource"
-		jdbcUrl="jdbc:mysql://localhost:3306/loteria?useSSL=false" />		
+		jdbcUrl="jdbc:mysql://localhost:3306/loteria?useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC" />		
 
 </Context>
